@@ -126,6 +126,71 @@ Add the following lines to have your raspberrypi automatically connect to your h
 
 `$ https://github.com/khinds10/PartyPi.git`
 
+
+CLONE THE LED DRIVER LIBRARY
+`$ cd ~`
+`$ git clone https://github.com/adafruit/Adafruit_Python_LED_Backpack.git`
+`$ cd Adafruit_Python_LED_Backpack`
+`$ sudo python setup.py install`
+
+TEST IF IT'S WORKING
+`$ cd examples`
+`$ sudo python matrix8x8_test.py`
+
+
+Install the Adafruit I2S MEMS Microphone Breakout Microphone
+https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/overview
+
+
+
+sudo nano /boot/config.txt
+Uncomment #dtparam=i2s=on
+
+sudo nano /etc/modules
+snd-bcm2835 on its own line
+lsmod | grep snd
+
+sudo apt-get update
+sudo apt-get install rpi-update
+sudo rpi-update
+sudo apt-get install bc libncurses5-dev
+
+sudo wget https://raw.githubusercontent.com/notro/rpi-source/master/rpi-source -O /usr/bin/rpi-source
+sudo chmod +x /usr/bin/rpi-source
+/usr/bin/rpi-source -q --tag-update
+rpi-source
+
+
+sudo mount -t debugfs debugs /sys/kernel/debug
+sudo cat /sys/kernel/debug/asoc/platforms
+
+git clone https://github.com/PaulCreaser/rpi-i2s-audio
+cd rpi-i2s-audio
+make -C /lib/modules/$(uname -r )/build M=$(pwd) modules
+sudo insmod my_loader.ko
+
+lsmod | grep my_loader
+dmesg | tail
+
+sudo cp my_loader.ko /lib/modules/$(uname -r)
+echo 'my_loader' | sudo tee --append /etc/modules > /dev/null
+sudo depmod -a
+sudo modprobe my_loader
+
+sudo reboot
+
+arecord -l
+
+
+arecord -D plughw:1 -c1 -r 48000 -f S32_LE -t wav -V mono -v file.wav
+
+arecord -D plughw:1 -c2 -r 48000 -f S32_LE -t wav -V stereo -v file_stereo.wav
+
+copy it over to local to listen
+scp pi@<local-ip>:/home/pi/file.wav ~/Desktop/file.wav
+
+
+
 ## Supplies Needed
 
 **RaspberriPi Zero (W Model w/ built in wireless)**
